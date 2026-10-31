@@ -1,0 +1,48 @@
+{
+  "_realtime-BpJ24lPx.js": {
+    "file": "assets/realtime-BpJ24lPx.js",
+    "name": "realtime"
+  },
+  "node_modules/leaflet/dist/images/layers-2x.png": {
+    "file": "assets/layers-2x-Bpkbi35X.png",
+    "src": "node_modules/leaflet/dist/images/layers-2x.png"
+  },
+  "node_modules/leaflet/dist/images/layers.png": {
+    "file": "assets/layers-BWBAp2CZ.png",
+    "src": "node_modules/leaflet/dist/images/layers.png"
+  },
+  "node_modules/leaflet/dist/images/marker-icon.png": {
+    "file": "assets/marker-icon-hN30_KVU.png",
+    "src": "node_modules/leaflet/dist/images/marker-icon.png"
+  },
+  "resources/js/EmailDesignEditor.tsx": {
+    "file": "assets/EmailDesignEditor-mVIdxsxk.js",
+    "name": "EmailDesignEditor",
+    "src": "resources/js/EmailDesignEditor.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.tsx",
+      "_realtime-BpJ24lPx.js"
+    ]
+  },
+  "resources/js/app.tsx": {
+    "file": "assets/app-CpHbEhGY.js",
+    "name": "app",
+    "src": "resources/js/app.tsx",
+    "isEntry": true,
+    "imports": [
+      "_realtime-BpJ24lPx.js"
+    ],
+    "dynamicImports": [
+      "resources/js/EmailDesignEditor.tsx"
+    ],
+    "css": [
+      "assets/app-DdfjDGU_.css"
+    ],
+    "assets": [
+      "assets/layers-BWBAp2CZ.png",
+      "assets/layers-2x-Bpkbi35X.png",
+      "assets/marker-icon-hN30_KVU.png"
+    ]
+  }
+}

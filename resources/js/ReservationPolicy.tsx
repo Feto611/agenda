@@ -1,0 +1,3 @@
+import React from 'react';
+export const reservationPolicy='Los pagos de la reservación, incluidos anticipos y servicios adicionales, no son reembolsables por cancelación del cliente o inasistencia. Se respetan los derechos y las excepciones que establezca la legislación aplicable.';
+export function PolicyAcceptance({checked,onChange}:{checked:boolean;onChange:(value:boolean)=>void}){return <div className="reservation-policy"><strong>Política de cancelación y pagos</strong><p>{reservationPolicy}</p><label className="toggle"><input type="checkbox" checked={checked} onChange={e=>onChange(e.target.checked)}/>He leído y acepto esta política.</label></div>;}
