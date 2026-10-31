@@ -1,0 +1,45 @@
+# Optional direct HTTPS deployment. Do not combine with another service occupying 80/443.
+services:
+  caddy:
+    image: caddy:2.11.7-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy:/etc/caddy/config:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    command: ["caddy", "run", "--config", "/etc/caddy/config/Caddyfile.generated", "--adapter", "caddyfile"]
+    networks:
+      tls_proxy:
+        ipv4_address: 172.30.86.10
+    depends_on: [web, web-owner]
+    restart: unless-stopped
+  web:
+    networks:
+      default: {}
+      tls_proxy:
+        ipv4_address: 172.30.86.11
+  web-owner:
+    networks:
+      default: {}
+      tls_proxy:
+        ipv4_address: 172.30.86.12
+  app:
+    environment:
+      TRUSTED_PROXIES: 172.30.86.10
+  app-owner:
+    environment:
+      TRUSTED_PROXIES: 172.30.86.10
+  scheduler:
+    environment:
+      TRUSTED_PROXIES: 172.30.86.10
+networks:
+  tls_proxy:
+    ipam:
+      config:
+        - subnet: 172.30.86.0/24
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,39 @@
+# Independent test environment. It does not load .env or mount production volumes.
+name: encuentro-concurrency
+services:
+  postgres-test:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: encuentro_concurrency_test
+      POSTGRES_USER: encuentro_test
+      POSTGRES_PASSWORD: local_test_only
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U encuentro_test -d encuentro_concurrency_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  concurrency:
+    build:
+      context: .
+      target: app
+    environment:
+      APP_ENV: testing
+      APP_DEBUG: "false"
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      REALTIME_ENABLED: "false"
+      CONCURRENCY_TEST: "1"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres-test
+      DB_PORT: "5432"
+      DB_DATABASE: encuentro_concurrency_test
+      DB_USERNAME: encuentro_test
+      DB_PASSWORD: local_test_only
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+    command: ["php", "tests/postgres-concurrency.php"]

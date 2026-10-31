@@ -1,0 +1,151 @@
+name: encuentro
+services:
+  app:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      REALTIME_ENABLED: "true"
+      BROADCAST_CONNECTION: reverb
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      APP_PORTAL: client
+      SESSION_COOKIE: encuentro_customer_session
+      CACHE_PREFIX: encuentro_customer_cache_
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      target: web
+    ports:
+      - "${HTTP_BIND:-127.0.0.1}:${HTTP_PORT:-8080}:80"
+    depends_on: [app, reverb]
+    restart: unless-stopped
+  app-owner:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      REALTIME_ENABLED: "true"
+      BROADCAST_CONNECTION: reverb
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      APP_PORTAL: owner
+      APP_URL: ${OWNER_URL:-http://localhost:8081}
+      SESSION_SECURE_COOKIE: ${OWNER_SECURE_COOKIE:-false}
+      SESSION_COOKIE: encuentro_owner_session
+      CACHE_PREFIX: encuentro_owner_cache_
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  web-owner:
+    build:
+      context: .
+      target: owner-web
+    ports:
+      - "${OWNER_BIND:-127.0.0.1}:${OWNER_PORT:-8081}:80"
+    depends_on: [app-owner, reverb]
+    restart: unless-stopped
+  scheduler:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      REALTIME_ENABLED: "true"
+      BROADCAST_CONNECTION: reverb
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      APP_PORTAL: client
+      SESSION_COOKIE: encuentro_customer_session
+      CACHE_PREFIX: encuentro_customer_cache_
+    command: ["php", "artisan", "schedule:work"]
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+  reverb:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      REALTIME_ENABLED: "true"
+      REVERB_SERVER_HOST: 0.0.0.0
+      REVERB_SERVER_PORT: 8080
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+      REVERB_APP_KEY: ${REVERB_APP_KEY:?Configura REVERB_APP_KEY en .env}
+      REVERB_APP_SECRET: ${REVERB_APP_SECRET:?Configura REVERB_APP_SECRET en .env}
+    command: ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+    volumes:
+      - app_storage:/var/www/html/storage
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
+  realtime-worker:
+    build:
+      context: .
+      target: app
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_PORTAL: client
+      REALTIME_ENABLED: "true"
+      BROADCAST_CONNECTION: reverb
+      REVERB_HOST: reverb
+      REVERB_PORT: 8080
+      REVERB_SCHEME: http
+    command: ["php", "artisan", "realtime:work"]
+    volumes:
+      - app_storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      reverb:
+        condition: service_started
+    restart: unless-stopped
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-encuentro}
+      POSTGRES_USER: ${DB_USERNAME:-encuentro}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Configura DB_PASSWORD en .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+volumes:
+  app_storage:
+  postgres_data:
