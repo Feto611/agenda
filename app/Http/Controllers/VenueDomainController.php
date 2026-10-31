@@ -1,0 +1,19 @@
+<?php
+namespace App\Http\Controllers;
+use App\Models\{Owner,Venue,VenueDomain,PlatformSetting};use App\Services\{VenueDomains,DomainNetwork};use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;use Illuminate\Support\Str;
+class VenueDomainController extends Controller {
+ private function admin(Request $r):bool{return $r->user() instanceof Owner&&(bool)$r->user()->platform_admin;}
+ private function own(Request $r,Venue $venue):void{abort_unless($this->admin($r)||$venue->owner_account_id===$r->user()->id,403);}
+ public function general(Request $r,VenueDomains $domains){abort_unless($this->admin($r),403);return ['enabled'=>$domains->generalEnabled(),'customer_url'=>config('portal.customer_url'),'owner_url'=>config('portal.owner_url'),'verification_days'=>config('domains.verification_days'),'https'=>'external_or_caddy'];}
+ public function saveGeneral(Request $r,VenueDomains $domains){abort_unless($this->admin($r),403);$d=$r->validate(['enabled'=>'required|boolean']);DB::transaction(function()use($d){PlatformSetting::query()->insertOrIgnore(['id'=>1,'settings'=>json_encode(PlatformSetting::defaults()),'created_at'=>now(),'updated_at'=>now()]);$row=PlatformSetting::whereKey(1)->lockForUpdate()->firstOrFail();$row->settings=array_replace($row->settings,['independent_sites_enabled'=>$d['enabled']]);$row->save();});return $this->general($r,$domains);}
+ public function venues(Request $r){abort_unless($this->admin($r),403);return Venue::select('id','slug','name','published')->orderBy('id')->paginate(30);}
+ public function show(Request $r,Venue $venue,VenueDomains $domains){$this->own($r,$venue);$site=VenueDomain::where('venue_id',$venue->id)->first();return ['site'=>$site?$domains->data($site):null,'general_enabled'=>$domains->generalEnabled(),'can_activate'=>$this->admin($r),'canonical_url'=>config('portal.customer_url').'/local/'.$venue->slug];}
+ public function save(Request $r,Venue $venue,VenueDomains $domains){$this->own($r,$venue);$d=$r->validate(['hostname'=>'required|string|max:253','enabled'=>'sometimes|boolean']);if(array_key_exists('enabled',$d))abort_unless($this->admin($r),403);$host=$domains->hostname($d['hostname']);try{DB::transaction(function()use($venue,$d,$host,$domains){
+  Venue::whereKey($venue->id)->lockForUpdate()->firstOrFail();abort_if(VenueDomain::where('hostname',$host)->where('venue_id','!=',$venue->id)->exists(),422,'Ese dominio ya está asignado a otro establecimiento.');
+  $site=VenueDomain::where('venue_id',$venue->id)->lockForUpdate()->first();if(!$site)$site=new VenueDomain(['venue_id'=>$venue->id]);
+  if($site->hostname!==$host)$site->fill(['hostname'=>$host,'verification_token'=>Str::random(64),'enabled'=>false,'dns_verified_at'=>null,'https_verified_at'=>null,'last_error'=>null]);
+  if($d['enabled']??false)abort_unless($domains->securePortals()&&$domains->generalEnabled()&&$venue->published&&$domains->verified($site),422,'Verifica DNS y HTTPS, configura ambos portales centrales con HTTPS, publica el local y habilita la función general antes de activar.');
+  if(array_key_exists('enabled',$d))$site->enabled=$d['enabled'];$site->save();
+ },3);}catch(\Illuminate\Database\UniqueConstraintViolationException $e){throw \Illuminate\Validation\ValidationException::withMessages(['hostname'=>'Ese dominio ya está asignado a otro establecimiento.']);}return $this->show($r,$venue,$domains);}
+ public function verify(Request $r,Venue $venue,string $kind,VenueDomains $domains,DomainNetwork $network){$this->own($r,$venue);abort_unless(in_array($kind,['dns','https'],true),404);$id=VenueDomain::where('venue_id',$venue->id)->value('id');abort_unless($id,422,'Guarda primero el dominio.');DB::transaction(function()use($id,$kind,$domains,$network){$site=VenueDomain::whereKey($id)->lockForUpdate()->firstOrFail();$kind==='dns'?$domains->checkDns($site,$network):$domains->checkHttps($site,$network);});return $this->show($r,$venue,$domains);}
+}

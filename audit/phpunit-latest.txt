@@ -1,0 +1,14 @@
+PHPUnit 11.5.57 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.5.10
+Configuration: /workspace/sites/encuentro-reservas/laravel/phpunit.xml
+
+.......(node:5) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+........................................................  63 / 171 ( 36%)
+............................................................... 126 / 171 ( 73%)
+.............................................                   171 / 171 (100%)
+
+Time: 00:25.671, Memory: 54.50 MB
+
+OK (171 tests, 698 assertions)

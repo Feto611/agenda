@@ -1,0 +1,9 @@
+test_docker_bootstrap_without_host_php (__main__.InstallerFlowTest.test_docker_bootstrap_without_host_php) ... ok
+test_failed_migration_stops_before_service_recreation (__main__.InstallerFlowTest.test_failed_migration_stops_before_service_recreation) ... ok
+test_fresh_and_upgrade_preserve_keys_and_wait_for_db_before_migration (__main__.InstallerFlowTest.test_fresh_and_upgrade_preserve_keys_and_wait_for_db_before_migration) ... ok
+test_invalid_option_does_not_create_configuration (__main__.InstallerFlowTest.test_invalid_option_does_not_create_configuration) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.293s
+
+OK

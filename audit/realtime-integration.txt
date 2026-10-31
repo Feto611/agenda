@@ -1,0 +1,18 @@
+
+> test:realtime
+> node tests/realtime-integration.mjs
+
+{
+  "status": "passed",
+  "server": "Laravel Reverb",
+  "checks": [
+    "real WebSocket handshake",
+    "signed Laravel broadcast",
+    "public event",
+    "private channel isolation",
+    "invalid private signature rejected",
+    "foreign origin rejected",
+    "unsigned publisher rejected",
+    "payload contains no personal data"
+  ]
+}

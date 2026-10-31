@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-27",
+  "scope": "local source and automated application tests, not public-server penetration test",
+  "php_tests": 171,
+  "php_assertions": 698,
+  "new_security_tests": 23,
+  "react_dom_tests": 35,
+  "typescript_vite_build": "passed",
+  "npm_known_advisories": 0,
+  "php_packages_checked": 119,
+  "php_known_affected_version_matches": 0,
+  "limitations": [
+    "Full suite: PHP.wasm/SQLite; protocol: native PHP 8.3",
+    "No real-browser or Docker/PostgreSQL/proxy verification",
+    "No commercial credentials used"
+  ],
+  "email_and_live_tests": 16,
+  "changes": [
+    "OSM origin referrer and CSP nonce",
+    "Numeric filtering and automatic HH:MM mask",
+    "Per-venue transactional mail outbox",
+    "Reverb/Echo event-driven invalidations with private channels, reconnect resync and offline-only 60s fallback",
+    "Failure-only login limits per account/IP and portal with broader failed-login IP cap",
+    "Duplicate form submission guard and Retry-After countdown",
+    "Customer chatbot removed from owner UI and endpoint denied on owner portal",
+    "Per-venue branding assets with draft/publish isolation, favicon and local font options",
+    "Host-side automatic persisted APP_KEY/Reverb secrets before Compose, no image secrets or rotation of existing values",
+    "Spanish login validation with field focus for 422, not automatic credential retry",
+    "Realtime connection fallback indicator and stale-connection state isolation"
+  ],
+  "realtime_php_tests": 15,
+  "realtime_protocol_checks": 8,
+  "realtime_protocol": "passed with real Reverb/PHP 8.3/Node loopback",
+  "login_branding_php_tests": 16,
+  "login_branding_new_dom_tests": 5,
+  "installer_native_php_tests": 7,
+  "installer_mock_flow_tests": 4
+}

@@ -1,0 +1,48 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> test:ui
+> node --import tsx --test tests/ui-render.test.tsx tests/forms-dom.test.tsx
+
+✔ borrar cifras mantiene el campo vacío y permite escribir sin un cero añadido (68.80849ms)
+✔ temperatura y monedas mantienen el borrador decimal durante la edición (10.493681ms)
+✔ requisitos, enteros y rangos se validan sin reinsertar un valor (7.233964ms)
+✔ el control de hora muestra HH:MM, admite vacío y rechaza horas inválidas (8.522019ms)
+✔ las conversiones distinguen cero de vacío y expresan la medianoche correctamente (1.517663ms)
+✔ HTML y JavaScript almacenados se muestran como texto sin nodos ejecutables (39.465851ms)
+✔ la simulación de cookies HttpOnly impide leer la sesión desde document.cookie (17.864265ms)
+✔ borrar y reescribir el cierre conserva la selección del día siguiente (12.855706ms)
+✔ la hora inserta los dos puntos al escribir solo dígitos y bloquea letras (6.976876ms)
+✔ los campos numéricos rechazan letras y notación científica incluso al pegar (4.647148ms)
+✔ las revisiones del servidor actualizan sin recargar y 304 conserva el estado (4.721147ms)
+✔ el recurso vivo vuelve a consultar al recuperar el foco y limpia su suscripción (7.093538ms)
+✔ retroceso permite borrar la hora completa sin quedar atrapado en los dos puntos (5.841085ms)
+✔ con WebSocket conectado no hay sondeo y los eventos y reconexión actualizan (11.846321ms)
+✔ consumidores comparten un canal y solo el último lo desuscribe (0.556929ms)
+✔ cerrar sesión desconecta el socket privado y descarta sus callbacks antiguos (0.389373ms)
+✔ el login ignora envíos duplicados mientras espera respuesta (14.270047ms)
+✔ el login muestra Retry-After y no reintenta automáticamente un 429 (13.233422ms)
+✔ el favicon y título del local se restauran al salir de su página (9.482282ms)
+✔ la marca de la vista previa modifica solo la pestaña de su iframe (13.515918ms)
+✔ el login explica un 422 y marca el campo sin reintentar credenciales (14.960563ms)
+✔ una conexión WebSocket no disponible muestra respaldo y se recupera al suscribir (1.661585ms)
+✔ una conexión anterior no cambia el estado de la sesión WebSocket nueva (0.963367ms)
+✔ el catálogo usa las fotos del local y omite el encabezado genérico (30.049254ms)
+✔ el panel financiero distingue anticipo solicitado de dinero pagado (17.836345ms)
+✔ los comentarios importados muestran fuente y no se etiquetan como verificados (2.584113ms)
+✔ no se inventan fotos cuando el dueño aún no ha publicado ninguna (10.827407ms)
+✔ el portal público no muestra acceso ni registro de propietarios (1.155159ms)
+✔ la navegación privada no mezcla el panel del cliente (42.328288ms)
+✔ el tema compartido aplica colores, bordes, tipografía, distribución y modales (2.365251ms)
+✔ el editor distingue borrador y publicación e incluye vista de cliente en iframe (65.330819ms)
+✔ la conexión de Meta pide secretos como contraseña y permite configurar los tres canales (3.699274ms)
+✔ el cliente vincula canales de forma explícita con un código (0.955156ms)
+✔ el dueño puede elegir servicio de correo y ver la cola sin exponer secretos (2.196893ms)
+✔ el editor ofrece logo, favicon, fuentes y visibilidad de mapa y asistente (4.701798ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1486.072027

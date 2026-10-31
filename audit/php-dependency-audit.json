@@ -1,0 +1,6 @@
+{
+  "source": "composer audit --locked --format=json",
+  "packages_checked": 119,
+  "matches": [],
+  "details": "composer-audit.json"
+}
